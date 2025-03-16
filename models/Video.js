@@ -1,4 +1,3 @@
-// First, let's set up our MongoDB schema (in a file like models/Video.js)
 import mongoose from "mongoose";
 
 const ActionSchema = new mongoose.Schema({
@@ -8,8 +7,8 @@ const ActionSchema = new mongoose.Schema({
     required: true,
   },
   timestamp: { type: Date, default: Date.now },
-  user: { type: String, default: "Anonymous" }, // In a real app, use user IDs
-  data: { type: mongoose.Schema.Types.Mixed }, // Store relevant data like previous/new title or comment details
+  user: { type: String, default: "Default" },
+  data: { type: mongoose.Schema.Types.Mixed },
 });
 
 const CommentSchema = new mongoose.Schema({
@@ -20,14 +19,12 @@ const CommentSchema = new mongoose.Schema({
 
 const VideoSchema = new mongoose.Schema({
   videoId: { type: String, required: true, unique: true },
-  originalTitle: { type: String, required: true }, // The original YouTube title
-  currentTitle: { type: String, required: true }, // The current title (after edits)
+  originalTitle: { type: String, required: true },
+  currentTitle: { type: String, required: true },
   comments: [CommentSchema],
   actionHistory: [ActionSchema],
-  // You can store other video data here as well
   channelTitle: String,
   viewCount: Number,
-  // etc.
 });
 
 export default mongoose.models.Video || mongoose.model("Video", VideoSchema);

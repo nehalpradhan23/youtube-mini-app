@@ -1,4 +1,3 @@
-// app/api/video/history/route.js
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/utils/mongodb";
 import Video from "@/models/Video";

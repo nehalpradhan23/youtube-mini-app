@@ -1,4 +1,3 @@
-// app/page.js
 "use client";
 
 import { useState, useEffect } from "react";
@@ -15,7 +14,6 @@ export default function YoutubeVideo3() {
   const [actionHistory, setActionHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Hardcoded YouTube video URL - replace with your desired video
   const hardcodedVideoUrl = "https://youtu.be/KcpoJOME0fA";
 
   const extractVideoId = (url) => {
@@ -66,7 +64,7 @@ export default function YoutubeVideo3() {
       const response = await axios.post("/api/video/comment", {
         videoId: videoData.id,
         text: newComment,
-        username: "You", // In a real app, this would be the logged-in user
+        username: "User",
       });
 
       // Update local state with the new comment from the response
@@ -140,17 +138,19 @@ export default function YoutubeVideo3() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <main className="container mx-auto py-8 px-4">
+      <main className="mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold text-center mb-8">
-          YouTube Video Info
+          YouTube Mini App - cactro fullstack test 16/03/25
         </h1>
 
         {loading && (
           <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
             </div>
-            <p className="text-center mt-4">Loading video data...</p>
+            <p className="text-center mt-4 text-2xl font-bold">
+              Loading video data...
+            </p>
           </div>
         )}
 
@@ -174,14 +174,14 @@ export default function YoutubeVideo3() {
 
             <div className="p-6">
               {isEditingTitle ? (
-                <div className="mb-4">
+                <div className="mb-10 flex items-center gap-4">
                   <input
                     type="text"
                     value={editedTitle}
                     onChange={(e) => setEditedTitle(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <div className="mt-2 flex gap-2">
+                  <div className="flex gap-2 items-center justify-center">
                     <button
                       onClick={handleSaveTitle}
                       className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
@@ -200,18 +200,18 @@ export default function YoutubeVideo3() {
                   </div>
                 </div>
               ) : (
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-10">
                   <div>
                     <h2 className="text-2xl font-bold">{videoData.title}</h2>
-                    {videoData.originalTitle !== videoData.title && (
+                    {/* {videoData.originalTitle !== videoData.title && (
                       <p className="text-lg text-gray-600">
                         Original title: {videoData.originalTitle}
                       </p>
-                    )}
+                    )} */}
                   </div>
                   <button
                     onClick={() => setIsEditingTitle(true)}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-blue-600 hover:text-blue-800 text-xl"
                   >
                     Edit Title
                   </button>

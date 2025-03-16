@@ -1,55 +1,3 @@
-// // app/api/video/title/route.js
-// import { NextResponse } from "next/server";
-// import connectToDatabase from "@/utils/mongodb";
-// import Video from "@/models/Video";
-
-// export async function PUT(request) {
-//   try {
-//     const { videoId, newTitle } = await request.json();
-
-//     if (!videoId || !newTitle) {
-//       return NextResponse.json(
-//         { message: "Video ID and new title are required" },
-//         { status: 400 }
-//       );
-//     }
-
-//     await connectToDatabase();
-//     const video = await Video.findOne({ videoId });
-
-//     if (!video) {
-//       return NextResponse.json({ message: "Video not found" }, { status: 404 });
-//     }
-
-//     // Record the action in history
-//     video.actionHistory.push({
-//       type: "TITLE_CHANGE",
-//       data: {
-//         previousTitle: video.currentTitle,
-//         newTitle,
-//       },
-//     });
-
-//     // Update the title
-//     video.currentTitle = newTitle;
-//     await video.save();
-
-//     return NextResponse.json({
-//       success: true,
-//       message: "Title updated successfully",
-//       currentTitle: newTitle,
-//       actionHistory: video.actionHistory,
-//     });
-//   } catch (error) {
-//     console.error("Title update error:", error);
-//     return NextResponse.json(
-//       { message: "Error updating title", error: error.message },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-// app/api/video/title/route.js
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/utils/mongodb";
 import Video from "@/models/Video";
@@ -100,7 +48,6 @@ export async function PUT(request) {
 
       const videoItem = videoResponse.data.items[0];
 
-      // Create new video document
       video = await Video.create({
         videoId,
         originalTitle: videoItem.snippet.title,
@@ -111,7 +58,6 @@ export async function PUT(request) {
       });
     }
 
-    // Record the action in history
     video.actionHistory.push({
       type: "TITLE_CHANGE",
       data: {
