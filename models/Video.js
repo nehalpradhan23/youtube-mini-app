@@ -13,7 +13,7 @@ const ActionSchema = new mongoose.Schema({
 
 const CommentSchema = new mongoose.Schema({
   text: { type: String, required: true },
-  username: { type: String, default: "Anonymous" },
+  username: { type: String, default: "Default" },
   timestamp: { type: Date, default: Date.now },
 });
 

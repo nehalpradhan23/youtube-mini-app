@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/utils/mongodb";
 import Video from "@/models/Video";
 import axios from "axios";
+import mongoose from "mongoose";
 
 async function ensureVideoExists(videoId) {
   let video = await Video.findOne({ videoId });
@@ -58,7 +59,9 @@ export async function POST(request) {
     // check if video exists
     const video = await ensureVideoExists(videoId);
 
+    // Create new comment with an ObjectId
     const newComment = {
+      _id: new mongoose.Types.ObjectId(),
       text,
       username,
       timestamp: new Date(),
@@ -69,13 +72,20 @@ export async function POST(request) {
     video.actionHistory.push({
       type: "COMMENT_ADD",
       data: { commentId: newComment._id, text },
+      timestamp: new Date(),
     });
 
     await video.save();
 
+    // Convert _id to string to ensure consistency
+    const commentToReturn = {
+      ...newComment,
+      _id: newComment._id.toString(),
+    };
+
     return NextResponse.json({
       success: true,
-      comment: newComment,
+      comment: commentToReturn,
       actionHistory: video.actionHistory,
     });
   } catch (error) {
@@ -116,11 +126,21 @@ export async function DELETE(request) {
     }
 
     // Find the comment
-    const comment = video.comments.id(commentId);
+    let comment;
+    try {
+      const objectId = mongoose.Types.ObjectId.isValid(commentId)
+        ? new mongoose.Types.ObjectId(commentId)
+        : commentId;
+
+      comment = video.comments.id(objectId);
+    } catch (error) {
+      console.error("Comment ID conversion error:", error);
+      comment = video.comments.find((c) => c._id.toString() === commentId);
+    }
 
     if (!comment) {
       return NextResponse.json(
-        { message: "Comment not found" },
+        { message: "Comment not found", commentId },
         { status: 404 }
       );
     }
@@ -132,13 +152,12 @@ export async function DELETE(request) {
       username: comment.username,
     };
 
-    // Remove the comment
     video.comments.pull(commentId);
 
-    // Record the action
     video.actionHistory.push({
       type: "COMMENT_DELETE",
       data: commentData,
+      timestamp: new Date(),
     });
 
     await video.save();

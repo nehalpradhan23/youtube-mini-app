@@ -67,8 +67,15 @@ export default function YoutubeVideo3() {
         username: "User",
       });
 
-      // Update local state with the new comment from the response
-      setComments([...comments, response.data.comment]);
+      console.log("New comment from server:", response.data.comment);
+      console.log("Comment ID type:", typeof response.data.comment._id);
+
+      const newCommentWithId = {
+        ...response.data.comment,
+        _id: response.data.comment._id,
+      };
+
+      setComments((prev) => [...prev, newCommentWithId]);
       setActionHistory(response.data.actionHistory);
       setNewComment("");
     } catch (err) {
@@ -79,6 +86,8 @@ export default function YoutubeVideo3() {
   };
 
   const handleDeleteComment = async (commentId) => {
+    console.log("Deleting comment with ID:", commentId);
+
     try {
       const response = await axios.delete(`/api/video/comment`, {
         params: {
@@ -87,7 +96,6 @@ export default function YoutubeVideo3() {
         },
       });
 
-      // Update local comments and history
       setComments(comments.filter((comment) => comment._id !== commentId));
       setActionHistory(response.data.actionHistory);
     } catch (err) {
